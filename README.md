@@ -13,11 +13,12 @@ $url = 'https://mesomb.hachther.com/api/v1.0/payment/online/';
 $appKey = 'APP_KEY';
 $data = array(
   'amount' => 100,
-  'payer' => '237670000000',
+  'payer' => '670000000',
   'fees' => true,
   'service' => 'MTN',
   'currency' => 'XAF',
-  'message' => "Message"
+  'message' => "Message",
+  'country' => 'CM'
 );
 
 curl_setopt_array($curl, [
@@ -50,6 +51,29 @@ if ($err) {
 ?>
 ```
 
+### Ruby
+
+```
+require 'uri'
+require 'net/http'
+require 'openssl'
+
+url = URI("https://mesomb.hachther.com/api/v1.0/payment/online/")
+
+http = Net::HTTP.new(url.host, url.port)
+http.use_ssl = true
+http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+request = Net::HTTP::Post.new(url)
+request["Content-Type"] = 'application/json'
+request["X-MeSomb-Application"] = 'APP_KEY'
+request["X-MeSomb-OperationMode"] = 'synchronous'
+request.body = "{\n\t\"amount\": 10,\n\t\"payer\": \"670000000\",\n\t\"fees\": true,\n\t\"service\": \"MTN\",\n\t\"currency\": \"XAF\",\n\t\"country\": \"CM\",\n\t\"fees\": true\n}"
+
+response = http.request(request)
+puts response.read_body
+```
+
 ## Deposit 
 
 ### PHP
@@ -59,9 +83,9 @@ if ($err) {
 
 $curl = curl_init();
 
-$appKey = '57af24d87365baee326e3e7a12dce17e76f49c5c';
-$appPIN = '8908';
-$apiKey = '77dd38a98a39305953d74a8492e3d9d7bc8b27a8';
+$appKey = 'APP_KEY';
+$appPIN = 'USER_PIN';
+$apiKey = 'API_KEY';
 $url = "https://mesomb.hachther.com/en/api/v1.0/applications/$appKey/deposit/";
 $data = array(
   'amount' => 20,
@@ -98,4 +122,26 @@ if ($err) {
   echo $response;
 }
 ?>
+```
+
+### Ruby
+
+```
+require 'uri'
+require 'net/http'
+require 'openssl'
+
+url = URI("https://mesomb.hachther.com/en/api/v1.0/applications/APP_KEY/deposit/")
+
+http = Net::HTTP.new(url.host, url.port)
+http.use_ssl = true
+http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+request = Net::HTTP::Post.new(url)
+request["Content-Type"] = 'application/json'
+request["Authorization"] = 'Token [API_KEY]'
+request.body = "{\n\t\"amount\": 20,\n\t\"receiver\": \"670000000\",\n\t\"service\": \"ORANGE\",\n\t\"pin\": \"[PIN_CODE]\",\n\t\"country\": \"CM\",\n}"
+
+response = http.request(request)
+puts response.read_body
 ```
