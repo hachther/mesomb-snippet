@@ -57,18 +57,19 @@ if ($err) {
 require 'uri'
 require 'net/http'
 require 'openssl'
+require 'json'
 
 url = URI("https://mesomb.hachther.com/api/v1.0/payment/online/")
 
 http = Net::HTTP.new(url.host, url.port)
 http.use_ssl = true
-http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
 request = Net::HTTP::Post.new(url)
 request["Content-Type"] = 'application/json'
 request["X-MeSomb-Application"] = 'APP_KEY'
 request["X-MeSomb-OperationMode"] = 'synchronous'
-request.body = "{\n\t\"amount\": 10,\n\t\"payer\": \"670000000\",\n\t\"fees\": true,\n\t\"service\": \"MTN\",\n\t\"currency\": \"XAF\",\n\t\"country\": \"CM\",\n\t\"fees\": true\n}"
+request.body = JSON.generate({ amount: 10, payer: "670000000", fees: true, service: "MTN", currency: "XAF", country: "CM" })
 
 response = http.request(request)
 puts response.read_body
@@ -130,6 +131,7 @@ if ($err) {
 require 'uri'
 require 'net/http'
 require 'openssl'
+require 'json'
 
 url = URI("https://mesomb.hachther.com/en/api/v1.0/applications/APP_KEY/deposit/")
 
@@ -140,7 +142,7 @@ http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 request = Net::HTTP::Post.new(url)
 request["Content-Type"] = 'application/json'
 request["Authorization"] = 'Token [API_KEY]'
-request.body = "{\n\t\"amount\": 20,\n\t\"receiver\": \"670000000\",\n\t\"service\": \"ORANGE\",\n\t\"pin\": \"[PIN_CODE]\",\n\t\"country\": \"CM\",\n}"
+request.body = JSON.generate({ amount: 20, receiver: "670000000", service: "MTN", pin: "PIN_CODE", country: "CM" })
 
 response = http.request(request)
 puts response.read_body
